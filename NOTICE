@@ -1,11 +1,24 @@
 Ce dépôt contient des portages au format natif zsh-tool de plugins
 d'Oh My Zsh (https://github.com/ohmyzsh/ohmyzsh, commit d2b7f55).
 
-Les plugins git, sudo, extract et colored-man-pages sont dérivés des
-fichiers d'Oh My Zsh du même nom, ainsi que les fonctions git_current_branch
-(lib/git.zsh) et la détection du presse-papiers (lib/clipboard.zsh) reprises
-dans le plugin git. Le plugin z embarque Zsh-z (https://github.com/agkozak/zsh-z)
-tel que distribué par Oh My Zsh ; sa licence est aussi dans plugins/z/LICENSE.
+Tous les plugins sont dérivés des fichiers d'Oh My Zsh du même nom (git,
+sudo, extract, colored-man-pages, history, docker, docker-compose, kubectl,
+npm, node, nvm, python, pip, pyenv, fzf, command-not-found, web-search,
+copypath, dirhistory), ainsi que les fonctions reprises de lib/ d'Oh My Zsh :
+git_current_branch (lib/git.zsh), la détection du presse-papiers
+(lib/clipboard.zsh, plugins git et copypath), open_command et omz_urlencode
+(lib/functions.zsh, plugins node et web-search). Le plugin z embarque Zsh-z
+(https://github.com/agkozak/zsh-z) tel que distribué par Oh My Zsh ; sa
+licence est aussi dans plugins/z/LICENSE.
+
+Les fichiers de complétion suivants sont repris tels quels d'Oh My Zsh, avec
+leur en-tête d'origine :
+- plugins/docker/legacy/_docker : complétion docker de Felix Riedel et
+  contributeurs, licence BSD à trois clauses reproduite dans l'en-tête du
+  fichier ;
+- plugins/docker-compose/completions/_docker-compose : complétion
+  docker-compose de Steve Durrheimer ;
+- plugins/pip/completions/_pip : complétion pip d'Oh My Zsh.
 
 --------------------------------------------------------------------------
 Oh My Zsh
