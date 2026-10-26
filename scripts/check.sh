@@ -271,6 +271,40 @@ dirhistory_up
 [[ $PWD == $WORK/a ]] || fail "dirhistory_up: $PWD"
 '
 
+# A fake nvm: nvm.sh logs each time it is sourced and puts a fake node first
+# in $PATH.
+pre_nvm='
+mkdir -p $HOME/.nvm/fakebin
+print -r -- "print sourced >> \$NVM_DIR/log
+nvm() { print -r -- nvm \$* }
+nvm_find_nvmrc() { }
+path=(\$NVM_DIR/fakebin \$path)" > $HOME/.nvm/nvm.sh
+print -r -- "#!/bin/sh
+echo fake node \$*" > $HOME/.nvm/fakebin/node
+chmod +x $HOME/.nvm/fakebin/node
+'
+checks_nvm='
+[[ $NVM_DIR == $HOME/.nvm ]] || fail "NVM_DIR: $NVM_DIR"
+[[ ! -e $NVM_DIR/log ]] || fail "nvm.sh sourced at start-up"
+for f in nvm node npm npx pnpm pnpx yarn corepack _omz_nvm_load; do
+  (( $+functions[$f] )) || fail "relay function $f"
+done
+node --version > $WORK/out
+[[ $(<$WORK/out) == "fake node --version" ]] || fail "node through relay: $(<$WORK/out)"
+[[ $(<$NVM_DIR/log) == sourced ]] || fail "nvm.sh sourced: $(<$NVM_DIR/log)"
+(( ! $+functions[node] && ! $+functions[npm] )) || fail "relay functions left after loading"
+[[ $(nvm ls) == "nvm ls" ]] || fail "nvm after loading"
+rm $NVM_DIR/log
+out=$(rerun "zstyle :omz:plugins:nvm lazy-cmd eslint" "(( \$+functions[eslint] )) && print relay; eslint 2>/dev/null; cat \$NVM_DIR/log") || fail "lazy-cmd: $out"
+[[ $out == relay*sourced ]] || fail "lazy-cmd: $out"
+rm $NVM_DIR/log
+out=$(rerun "zstyle :omz:plugins:nvm lazy no" "cat \$NVM_DIR/log; print \$+functions[node]") || fail "lazy no: $out"
+[[ $out == "sourced"$'"'"'\n'"'"'"0" ]] || fail "lazy no: $out"
+rm $NVM_DIR/log
+out=$(rerun "NVM_DIR=$WORK/none" "print \$+functions[node] \$+functions[nvm]") || fail "without nvm: $out"
+[[ $out == "0 0" ]] || fail "without nvm: $out"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")

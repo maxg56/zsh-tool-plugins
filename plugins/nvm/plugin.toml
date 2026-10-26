@@ -1,0 +1,9 @@
+# Portage natif du plugin nvm d'Oh My Zsh (commit d2b7f55).
+# Différence : le chargement paresseux est actif par défaut (désactivable
+# avec `zstyle ':omz:plugins:nvm' lazy no`).
+
+[plugin]
+name = "nvm"
+version = "1.0.0"
+description = "Charge nvm au premier appel de nvm, node, npm, npx… (portage du plugin nvm d'Oh My Zsh, chargement paresseux par défaut)"
+init = ["nvm.zsh"]
