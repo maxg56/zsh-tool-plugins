@@ -252,6 +252,25 @@ rm $WORK/bin/fzf
 out=$(rerun "" "") ; [[ $out == "[zsh-tool] fzf plugin: Cannot find fzf installation directory."* ]] || fail "missing fzf: $out"
 '
 
+checks_dirhistory='
+[[ $aliases[cde] == dirhistory_cd ]] || fail "alias cde"
+for w in dirhistory_zle_dirhistory_back dirhistory_zle_dirhistory_future dirhistory_zle_dirhistory_up dirhistory_zle_dirhistory_down; do
+  [[ -n ${(M)${(f)"$(zle -l)"}:#$w} ]] || fail "widget $w"
+done
+[[ $(bindkey -M emacs "\e[1;3D") == *dirhistory_zle_dirhistory_back ]] || fail "bindkey alt-left"
+[[ $(bindkey -M viins "\e[1;3A") == *dirhistory_zle_dirhistory_up ]] || fail "bindkey alt-up"
+mkdir -p $WORK/a/sub $WORK/b
+cd $WORK/a; cd $WORK/b
+dirhistory_back
+[[ $PWD == $WORK/a ]] || fail "dirhistory_back: $PWD"
+dirhistory_forward
+[[ $PWD == $WORK/b ]] || fail "dirhistory_forward: $PWD"
+cd $WORK/a; dirhistory_down
+[[ $PWD == $WORK/a/sub ]] || fail "dirhistory_down: $PWD"
+dirhistory_up
+[[ $PWD == $WORK/a ]] || fail "dirhistory_up: $PWD"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
