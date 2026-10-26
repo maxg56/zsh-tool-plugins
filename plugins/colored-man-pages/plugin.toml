@@ -1,0 +1,7 @@
+# Portage natif du plugin colored-man-pages d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "colored-man-pages"
+version = "1.0.0"
+description = "Pages de manuel en couleurs (portage du plugin colored-man-pages d'Oh My Zsh)"
+init = ["colored-man-pages.zsh"]
