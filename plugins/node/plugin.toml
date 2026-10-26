@@ -1,0 +1,7 @@
+# Portage natif du plugin node d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "node"
+version = "1.0.0"
+description = "Commande node-docs qui ouvre la documentation de la version de Node.js installée (portage du plugin node d'Oh My Zsh)"
+init = ["node.zsh"]

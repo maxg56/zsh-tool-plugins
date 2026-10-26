@@ -1,0 +1,51 @@
+# Portage natif du plugin web-search d'Oh My Zsh (commit d2b7f55).
+# Les alias fixes sont déclarés ici ; la fonction web_search et les alias
+# des moteurs ajoutés par ZSH_WEB_SEARCH_ENGINES sont dans web-search.zsh.
+# Les quatre moteurs d'assistants conversationnels d'Oh My Zsh ne sont pas
+# repris ; ZSH_WEB_SEARCH_ENGINES permet de les ajouter.
+
+[plugin]
+name = "web-search"
+version = "1.0.0"
+description = "Recherche web depuis le terminal : google, ddg, github… (portage du plugin web-search d'Oh My Zsh)"
+init = ["web-search.zsh"]
+
+[aliases]
+bing = 'web_search bing'
+brs = 'web_search brave'
+google = 'web_search google'
+yahoo = 'web_search yahoo'
+ddg = 'web_search duckduckgo'
+sp = 'web_search startpage'
+yandex = 'web_search yandex'
+github = 'web_search github'
+baidu = 'web_search baidu'
+ecosia = 'web_search ecosia'
+goodreads = 'web_search goodreads'
+qwant = 'web_search qwant'
+givero = 'web_search givero'
+stackoverflow = 'web_search stackoverflow'
+wolframalpha = 'web_search wolframalpha'
+archive = 'web_search archive'
+scholar = 'web_search scholar'
+ask = 'web_search ask'
+youtube = 'web_search youtube'
+deepl = 'web_search deepl'
+dockerhub = 'web_search dockerhub'
+gems = 'web_search gems'
+npmpkg = 'web_search npmpkg'
+packagist = 'web_search packagist'
+gopkg = 'web_search gopkg'
+maven = 'web_search maven'
+pypi = 'web_search pypi'
+aur = 'web_search aur'
+archwiki = 'web_search archwiki'
+wikipedia = 'web_search wikipedia'
+reddit = 'web_search reddit'
+rscrate = 'web_search rscrate'
+rsdoc = 'web_search rsdoc'
+wiki = 'web_search duckduckgo \!w'
+news = 'web_search duckduckgo \!n'
+map = 'web_search duckduckgo \!m'
+image = 'web_search duckduckgo \!i'
+ducky = 'web_search duckduckgo \!'

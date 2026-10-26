@@ -1,0 +1,9 @@
+# Portage natif du plugin kubectl d'Oh My Zsh (commit d2b7f55).
+# Comme dans Oh My Zsh, les alias ne sont définis que si kubectl est
+# installé : ils sont donc dans kubectl.zsh et non dans [aliases].
+
+[plugin]
+name = "kubectl"
+version = "1.0.0"
+description = "Alias kubectl et complétion à jour (portage du plugin kubectl d'Oh My Zsh)"
+init = ["kubectl.zsh"]

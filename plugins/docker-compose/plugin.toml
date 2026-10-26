@@ -1,0 +1,10 @@
+# Portage natif du plugin docker-compose d'Oh My Zsh (commit d2b7f55).
+# Les alias dépendent de la commande disponible (docker-compose ou
+# docker compose) : ils sont définis par docker-compose.zsh.
+
+[plugin]
+name = "docker-compose"
+version = "1.0.0"
+description = "Alias docker compose et complétion (portage du plugin docker-compose d'Oh My Zsh)"
+init = ["docker-compose.zsh"]
+fpath = ["completions"]

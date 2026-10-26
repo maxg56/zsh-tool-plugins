@@ -1,0 +1,15 @@
+# Portage natif du plugin python d'Oh My Zsh (commit d2b7f55).
+# Les alias fixes sont déclarés ici ; l'alias py (seulement sans commande
+# py), les fonctions et l'activation automatique des venv sont dans
+# python.zsh.
+
+[plugin]
+name = "python"
+version = "1.0.0"
+description = "Alias et fonctions python, gestion des venv (portage du plugin python d'Oh My Zsh)"
+init = ["python.zsh"]
+
+[aliases]
+pyfind = 'find . -name "*.py"'
+pygrep = 'grep -nr --include="*.py"'
+pyserver = "python3 -m http.server"

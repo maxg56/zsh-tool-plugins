@@ -1,0 +1,10 @@
+# Portage natif du plugin dirhistory d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "dirhistory"
+version = "1.0.0"
+description = "Alt+flèches pour naviguer dans l'historique et la hiérarchie des dossiers (portage du plugin dirhistory d'Oh My Zsh)"
+init = ["dirhistory.zsh"]
+
+[aliases]
+cde = "dirhistory_cd"

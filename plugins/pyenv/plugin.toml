@@ -1,0 +1,11 @@
+# Portage natif du plugin pyenv d'Oh My Zsh (commit d2b7f55).
+# Différence : `pyenv init` est différé jusqu'au premier appel de pyenv,
+# python, python3, pip ou pip3 (désactivable avec
+# `zstyle ':omz:plugins:pyenv' lazy no`) ; les shims sont mis dans PATH dès
+# le démarrage.
+
+[plugin]
+name = "pyenv"
+version = "1.0.0"
+description = "Charge pyenv (et pyenv-virtualenv) au premier appel de pyenv ou python (portage du plugin pyenv d'Oh My Zsh, chargement paresseux par défaut)"
+init = ["pyenv.zsh"]

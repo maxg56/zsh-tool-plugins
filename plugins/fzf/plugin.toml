@@ -1,0 +1,7 @@
+# Portage natif du plugin fzf d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "fzf"
+version = "1.0.0"
+description = "Raccourcis clavier et complétion de fzf, quelle que soit la façon dont il est installé (portage du plugin fzf d'Oh My Zsh)"
+init = ["fzf.zsh"]
