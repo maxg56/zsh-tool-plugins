@@ -164,6 +164,17 @@ BROWSER=$WORK/bin/browser node-docs fs
 [[ $(<$WORK/opened) == https://nodejs.org/docs/v22.1.0/api/fs.html ]] || fail "node-docs opened: $(<$WORK/opened)"
 '
 
+checks_copypath='
+(( $+functions[copypath] )) || fail "function copypath"
+mkdir -p $WORK/dir && cd $WORK/dir
+fake xsel "cat > $WORK/clip"
+DISPLAY=:0 copypath ../dir/file > /dev/null || fail "copypath with xsel"
+[[ $(<$WORK/clip) == $WORK/dir/file ]] || fail "xsel got: $(<$WORK/clip)"
+clipcopy() { cat > $WORK/clip2 }
+[[ $(copypath) == *"$WORK/dir"*"copied to clipboard." ]] || fail "copypath output"
+[[ $(<$WORK/clip2) == $WORK/dir ]] || fail "clipcopy got: $(<$WORK/clip2)"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")

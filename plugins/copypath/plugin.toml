@@ -1,0 +1,7 @@
+# Portage natif du plugin copypath d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "copypath"
+version = "1.0.0"
+description = "Copie le chemin absolu d'un fichier ou du dossier courant dans le presse-papiers (portage du plugin copypath d'Oh My Zsh)"
+init = ["copypath.zsh"]
