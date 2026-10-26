@@ -305,6 +305,52 @@ out=$(rerun "NVM_DIR=$WORK/none" "print \$+functions[node] \$+functions[nvm]") |
 [[ $out == "0 0" ]] || fail "without nvm: $out"
 '
 
+# A fake pyenv in ~/.pyenv/bin that logs its arguments.
+pre_pyenv='
+mkdir -p $HOME/.pyenv/bin $HOME/.pyenv/shims
+print -r -- "#!/bin/sh
+echo \"\$*\" >> \$HOME/.pyenv/log
+case \"\$*\" in
+  root) echo \${PYENV_ROOT:-\$HOME/.pyenv} ;;
+  \"init --path\") echo \"export PATH=\\\"\$HOME/.pyenv/shims:\\\$PATH\\\"\" ;;
+  \"init - --no-rehash zsh\") echo \"export PYENV_SHELL=zsh; pyenv() { command pyenv \\\"\\\$@\\\" }\" ;;
+  commands) echo init; echo virtualenv-init ;;
+  \"virtualenv-init - zsh\") echo \"export PYENV_VIRTUALENV_INIT=1\" ;;
+  version-name) echo 3.12.1 ;;
+  *) echo \"pyenv \$*\" ;;
+esac" > $HOME/.pyenv/bin/pyenv
+chmod +x $HOME/.pyenv/bin/pyenv
+path=($HOME/.pyenv/shims $HOME/.pyenv/bin $path)
+'
+checks_pyenv='
+log=$HOME/.pyenv/log
+[[ ! -e $log ]] || fail "pyenv run at start-up: $(<$log)"
+[[ $PYENV_ROOT == $HOME/.pyenv ]] || fail "PYENV_ROOT: $PYENV_ROOT"
+for f in _pyenv_plugin_load pyenv python python3 pip pip3; do
+  (( $+functions[$f] )) || fail "relay function $f"
+done
+(( ! $+functions[pyenv_config_warning] && ! $+FOUND_PYENV )) || fail "helpers left behind"
+[[ $(pyenv_prompt_info) == 3.12.1 ]] || fail "pyenv_prompt_info: $(pyenv_prompt_info)"
+(( $+functions[python] )) || fail "pyenv_prompt_info loaded pyenv"
+pyenv --version > $WORK/out
+[[ $(<$WORK/out) == "pyenv --version" ]] || fail "pyenv through relay: $(<$WORK/out)"
+[[ $PYENV_SHELL == zsh && $PYENV_VIRTUALENV_INIT == 1 ]] || fail "pyenv init not evaluated"
+(( ! $+functions[python] && ! $+functions[_pyenv_plugin_load] )) || fail "relay functions left after loading"
+rm $log
+out=$(rerun "unset PYENV_VIRTUALENV_INIT; zstyle :omz:plugins:pyenv lazy no; ZSH_PYENV_VIRTUALENV=false" "cat \$HOME/.pyenv/log; print \$+functions[python] \${PYENV_VIRTUALENV_INIT-unset}") || fail "lazy no: $out"
+[[ $out == "init - --no-rehash zsh"$'"'"'\n'"'"'"0 unset" ]] || fail "lazy no: $out"
+rm $log
+out=$(rerun "zstyle :omz:plugins:pyenv lazy-cmd ipython" "print \$+functions[ipython]") || fail "lazy-cmd: $out"
+[[ $out == 1 ]] || fail "lazy-cmd: $out"
+out=$(rerun "path=(\${path:#\$HOME/.pyenv/shims})" "print -r -- \$path[1]")
+[[ $out == *"missing pyenv shims in \$PATH"*"$HOME/.pyenv/shims" ]] || fail "missing shims: $out"
+out=$(rerun "path=(\${path:#\$HOME/.pyenv/*}); unset PYENV_ROOT; ZSH_PYENV_QUIET=true" "print -r -- \$PYENV_ROOT \$path[1,2]")
+[[ $out == "$HOME/.pyenv $HOME/.pyenv/shims $HOME/.pyenv/bin" ]] || fail "pyenv outside PATH: $out"
+out=$(rerun "VIRTUAL_ENV=$WORK/venv" "print \$+functions[pyenv_prompt_info]")
+[[ $out == 0 ]] || fail "with VIRTUAL_ENV: $out"
+[[ ! -e $log ]] || fail "pyenv run by lazy shells: $(<$log)"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
