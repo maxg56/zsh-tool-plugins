@@ -1,0 +1,12 @@
+# Portage natif du plugin history d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "history"
+version = "1.0.0"
+description = "Alias pour consulter et chercher dans l'historique (portage du plugin history d'Oh My Zsh)"
+
+[aliases]
+h = "history"
+hl = "history | less"
+hs = "history | grep"
+hsi = "history | grep -i"

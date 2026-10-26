@@ -83,6 +83,12 @@ done
 [[ $(colored printenv GROFF_NO_SGR) == 1 ]] || fail "GROFF_NO_SGR"
 '
 
+checks_history='
+fail() { print -r -- "$@"; exit 1 }
+[[ $aliases[h] == history && $aliases[hl] == "history | less" ]] || fail "alias h/hl"
+[[ $aliases[hs] == "history | grep" && $aliases[hsi] == "history | grep -i" ]] || fail "alias hs/hsi"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
