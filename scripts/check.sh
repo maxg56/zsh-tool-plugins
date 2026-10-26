@@ -156,6 +156,14 @@ npm_toggle_install_uninstall
 [[ $BUFFER == "npm uninstall left-pad" && $CURSOR == 8 ]] || fail "toggle: $BUFFER $CURSOR"
 '
 
+checks_node='
+(( $+functions[node-docs] )) || fail "function node-docs"
+fake node "echo v22.1.0"
+fake browser "echo \"\$@\" > $WORK/opened"
+BROWSER=$WORK/bin/browser node-docs fs
+[[ $(<$WORK/opened) == https://nodejs.org/docs/v22.1.0/api/fs.html ]] || fail "node-docs opened: $(<$WORK/opened)"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
