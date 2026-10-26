@@ -228,6 +228,30 @@ for f in $handlers; do [[ -x $f ]] && expected=1; done
 (( ! $+file )) || fail "variable file left behind"
 '
 
+pre_fzf='
+fake fzf "case \$1 in
+  --version) echo \"0.55.0 (fc69308)\" ;;
+  --zsh) echo \"FZF_LOADED=fzf--zsh\" ;;
+esac"
+'
+checks_fzf='
+[[ $FZF_LOADED == fzf--zsh ]] || fail "fzf --zsh not evaluated"
+(( ! $+functions[fzf_setup_using_fzf] )) || fail "setup functions left behind"
+if (( $+commands[fd] )); then expected="fd --type f --hidden --exclude .git"
+elif (( $+commands[rg] )); then expected="rg --files --hidden --glob \"!.git/*\""
+elif (( $+commands[ag] )); then expected="ag -l --hidden -g \"\" --ignore .git"
+else expected=""; fi
+[[ ${FZF_DEFAULT_COMMAND-} == $expected ]] || fail "FZF_DEFAULT_COMMAND: ${FZF_DEFAULT_COMMAND-}"
+mkdir -p $WORK/fzf-base/shell
+print "FZF_LOADED=key-bindings" > $WORK/fzf-base/shell/key-bindings.zsh
+print "FZF_COMPLETION=1" > $WORK/fzf-base/shell/completion.zsh
+fake fzf "echo 0.40.0"
+out=$(rerun "FZF_BASE=$WORK/fzf-base; setopt interactive 2>/dev/null" "print -r -- \$FZF_LOADED \${FZF_COMPLETION-none}") || fail "FZF_BASE: $out"
+[[ $out == "key-bindings none" ]] || fail "FZF_BASE: $out"
+rm $WORK/bin/fzf
+out=$(rerun "" "") ; [[ $out == "[zsh-tool] fzf plugin: Cannot find fzf installation directory."* ]] || fail "missing fzf: $out"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
