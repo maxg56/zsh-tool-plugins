@@ -1,0 +1,7 @@
+# Portage natif du plugin command-not-found d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "command-not-found"
+version = "1.0.0"
+description = "Suggère le paquet à installer pour une commande introuvable (portage du plugin command-not-found d'Oh My Zsh)"
+init = ["command-not-found.zsh"]

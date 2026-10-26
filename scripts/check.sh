@@ -217,6 +217,17 @@ done
 [[ $(zsh-pip-test-clean-packages) == *"simple index is fine"*"djangopypi2 index is fine" ]] || fail "zsh-pip-clean-packages"
 '
 
+checks_command_not_found='
+handlers=(/usr/lib/command-not-found /usr/share/command-not-found/command-not-found
+  /usr/libexec/pk-command-not-found /run/current-system/sw/bin/command-not-found
+  /data/data/com.termux/files/usr/libexec/termux/command-not-found
+  /usr/bin/command-not-found /usr/libexec/command-not-found)
+expected=0
+for f in $handlers; do [[ -x $f ]] && expected=1; done
+[[ $+functions[command_not_found_handler] == $expected ]] || fail "command_not_found_handler defined: $+functions[command_not_found_handler], expected $expected"
+(( ! $+file )) || fail "variable file left behind"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
