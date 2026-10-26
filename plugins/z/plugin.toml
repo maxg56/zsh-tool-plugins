@@ -1,0 +1,12 @@
+# Portage natif du plugin z d'Oh My Zsh (commit d2b7f55), qui embarque
+# Zsh-z d'Alexandros Kozak (licence MIT, voir LICENSE). zsh-z.zsh est le
+# fichier z.plugin.zsh d'Oh My Zsh, inchangé : il ne dépend pas de lib/.
+# L'alias `z` reste défini par zsh-z.zsh, car son nom se règle avec
+# ZSHZ_CMD.
+
+[plugin]
+name = "z"
+version = "1.0.0"
+description = "Saut vers les dossiers les plus fréquentés (Zsh-z, portage du plugin z d'Oh My Zsh)"
+init = ["zsh-z.zsh"]
+fpath = ["completions"]
