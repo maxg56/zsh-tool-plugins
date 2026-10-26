@@ -189,6 +189,24 @@ out=$(rerun "ZSH_WEB_SEARCH_ENGINES=(mysearch \"https://search.example/?q=\")" "
 [[ $out == "web_search mysearch" ]] || fail "custom engine alias: $out"
 '
 
+checks_python='
+[[ $aliases[py] == python3 && $aliases[pyserver] == "python3 -m http.server" ]] || fail "alias py/pyserver"
+[[ $aliases[pyfind] == "find . -name \"*.py\"" ]] || fail "alias pyfind: $aliases[pyfind]"
+for f in pyclean pyuserpaths vrun mkv; do
+  (( $+functions[$f] )) || fail "function $f"
+done
+[[ $PYTHON_VENV_NAMES == "venv .venv" ]] || fail "PYTHON_VENV_NAMES: $PYTHON_VENV_NAMES"
+mkdir -p $WORK/proj/.venv/bin $WORK/proj/pkg/__pycache__ && touch $WORK/proj/pkg/__pycache__/m.pyc $WORK/proj/pkg/m.pyc
+print -r -- "VIRTUAL_ENV=$WORK/proj/.venv; deactivate() { unset VIRTUAL_ENV; unfunction deactivate }" > $WORK/proj/.venv/bin/activate
+cd $WORK/proj
+[[ $(vrun) == "Activated virtual environment .venv" ]] || fail "vrun"
+pyclean pkg
+[[ ! -e pkg/m.pyc && ! -e pkg/__pycache__ ]] || fail "pyclean"
+cd $WORK
+out=$(rerun "PYTHON_AUTO_VRUN=true" "cd proj; print -r -- \$VIRTUAL_ENV; cd ..; print -r -- \${VIRTUAL_ENV:-none}") || fail "auto_vrun: $out"
+[[ $out == "$WORK/proj/.venv"$'"'"'\n'"'"'"none" ]] || fail "auto_vrun: $out"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
