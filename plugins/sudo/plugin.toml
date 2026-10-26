@@ -1,0 +1,7 @@
+# Portage natif du plugin sudo d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "sudo"
+version = "1.0.0"
+description = "Échap deux fois préfixe la commande par sudo (portage du plugin sudo d'Oh My Zsh)"
+init = ["sudo.zsh"]
