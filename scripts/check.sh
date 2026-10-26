@@ -207,6 +207,16 @@ out=$(rerun "PYTHON_AUTO_VRUN=true" "cd proj; print -r -- \$VIRTUAL_ENV; cd ..; 
 [[ $out == "$WORK/proj/.venv"$'"'"'\n'"'"'"none" ]] || fail "auto_vrun: $out"
 '
 
+checks_pip='
+[[ $aliases[pipi] == "pip install" && $aliases[pipreq] == "pip freeze > requirements.txt" ]] || fail "alias pipi/pipreq"
+[[ $aliases[pip] == "noglob pip"* ]] || fail "alias pip: $aliases[pip]"
+for f in pipupall pipunall pipig pipigb pipigp zsh-pip-clear-cache zsh-pip-cache-packages; do
+  (( $+functions[$f] )) || fail "function $f"
+done
+[[ $_comps[pip] == _pip && $_comps[pipig] == _pip && $_comps[pipigp] == _pip ]] || fail "completion pip: $_comps[pip] $_comps[pipig]"
+[[ $(zsh-pip-test-clean-packages) == *"simple index is fine"*"djangopypi2 index is fine" ]] || fail "zsh-pip-clean-packages"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")

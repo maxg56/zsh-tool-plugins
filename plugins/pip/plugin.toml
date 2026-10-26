@@ -1,0 +1,19 @@
+# Portage natif du plugin pip d'Oh My Zsh (commit d2b7f55).
+# Les alias fixes sont déclarés ici ; l'alias pip (pip ou pip3 selon ce qui
+# est installé) et les fonctions sont dans pip.zsh.
+
+[plugin]
+name = "pip"
+version = "1.0.0"
+description = "Alias pip, fonctions et complétion avec cache de l'index (portage du plugin pip d'Oh My Zsh)"
+init = ["pip.zsh"]
+fpath = ["completions"]
+
+[aliases]
+pipi = "pip install"
+pipu = "pip install --upgrade"
+pipun = "pip uninstall"
+pipgi = "pip freeze | grep"
+piplo = "pip list -o"
+pipreq = "pip freeze > requirements.txt"
+pipir = "pip install -r requirements.txt"
