@@ -135,6 +135,14 @@ out=$(rerun "" "print -r -- \$aliases[dclF]") || fail "with docker-compose: $out
 (( ! $+dccmd )) || fail "dccmd left behind"
 '
 
+checks_kubectl='
+(( ! $+aliases[k] && ! $+functions[kj] )) || fail "aliases defined without kubectl"
+fake kubectl "[ \"\$1\" = completion ] && echo \"#compdef kubectl generated\""
+out=$(rerun "" "print -r -- \$aliases[k] \$aliases[kgp] \$_comps[kubectl] \$_comps[kj] \$+functions[kres]
+sleep 0.5; cat \$ZSH_CACHE_DIR/completions/_kubectl") || fail "with kubectl: $out"
+[[ $out == "kubectl kubectl get pods _kubectl _kj 1"$'"'"'\n'"'"'"#compdef kubectl generated" ]] || fail "with kubectl: $out"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
