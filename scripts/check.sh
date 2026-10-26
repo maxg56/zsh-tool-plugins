@@ -27,7 +27,24 @@ work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 
 # Checks run after `eval "$(zsh-tool init zsh)"`; each one prints a message
-# on stdout and exits non-zero on failure. $WORK is a scratch directory.
+# on stdout and exits non-zero on failure. $WORK is a scratch directory and
+# $WORK/bin comes first in $PATH. An optional pre_<plugin> snippet runs
+# before the init script, for instance to create fake commands with `fake`.
+# `rerun <code>` starts a fresh `zsh -f` in the same home that runs <code>,
+# then the init script, and prints its stdout and stderr.
+prelude='
+fail() { print -r -- "$@"; exit 1 }
+fake() {
+  mkdir -p $WORK/bin
+  print -r -- "#!/bin/sh"$'"'"'\n'"'"'"$2" > $WORK/bin/$1
+  chmod +x $WORK/bin/$1
+  rehash
+}
+rerun() {
+  zsh -f -c "WORK=${(q)WORK}; path=(\$WORK/bin \$path); $1
+eval \"\$(${(q)BIN} init zsh)\"; ${2-}" 2>&1
+}
+'
 checks_git='
 fail() { print -r -- "$@"; exit 1 }
 [[ $aliases[gst] == "git status" ]] || fail "alias gst: $aliases[gst]"
@@ -94,6 +111,7 @@ for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
   var=checks_$(printf %s "$name" | tr -- - _)
   eval "checks=\${$var-}"
+  eval "pre=\${pre_$(printf %s "$name" | tr -- - _)-}"
   if [ -z "$checks" ]; then
     echo "FAIL $name: no checks defined in $0"
     status=1
@@ -103,8 +121,12 @@ for dir in "$repo"/plugins/*/; do
   home=$work/$name
   mkdir -p "$home/.config/zsh-tool" "$home/work"
   printf 'plugins = ["%s"]\n' "$name" > "$home/.config/zsh-tool/config.toml"
-  script="eval \"\$('$bin' init zsh)\" || { print init failed; exit 90 }
-WORK='$home/work'
+  script="WORK='$home/work'
+BIN='$bin'
+path=(\$WORK/bin \$path)
+$prelude
+$pre
+eval \"\$('$bin' init zsh)\" || { print init failed; exit 90 }
 $checks"
   out=$(env -i HOME="$home" PATH="$PATH" TERM=dumb ZSH_TOOL_HOME="$repo" \
     zsh -f -c "$script" 2> "$home/stderr")
