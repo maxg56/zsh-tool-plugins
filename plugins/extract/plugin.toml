@@ -1,0 +1,11 @@
+# Portage natif du plugin extract d'Oh My Zsh (commit d2b7f55).
+
+[plugin]
+name = "extract"
+version = "1.0.0"
+description = "Commande extract pour décompresser la plupart des archives (portage du plugin extract d'Oh My Zsh)"
+init = ["extract.zsh"]
+fpath = ["completions"]
+
+[aliases]
+x = "extract"
