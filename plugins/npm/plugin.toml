@@ -1,0 +1,30 @@
+# Portage natif du plugin npm d'Oh My Zsh (commit d2b7f55).
+# Les alias sont déclarés ici ; la complétion et le raccourci F2 F2 sont
+# dans npm.zsh.
+
+[plugin]
+name = "npm"
+version = "1.0.0"
+description = "Alias npm, complétion et bascule install/uninstall sur F2 F2 (portage du plugin npm d'Oh My Zsh)"
+init = ["npm.zsh"]
+
+[aliases]
+npmg = "npm i -g "
+npmS = "npm i -S "
+npmD = "npm i -D "
+npmF = 'npm i -f'
+npmE = 'PATH="$(npm bin)":"$PATH"'
+npmO = "npm outdated"
+npmU = "npm update"
+npmV = "npm -v"
+npmL = "npm list"
+npmL0 = "npm ls --depth=0"
+npmst = "npm start"
+npmt = "npm test"
+npmR = "npm run"
+npmP = "npm publish"
+npmI = "npm init"
+npmi = "npm info"
+npmSe = "npm search"
+npmrd = "npm run dev"
+npmrb = "npm run build"

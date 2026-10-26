@@ -143,6 +143,19 @@ sleep 0.5; cat \$ZSH_CACHE_DIR/completions/_kubectl") || fail "with kubectl: $ou
 [[ $out == "kubectl kubectl get pods _kubectl _kj 1"$'"'"'\n'"'"'"#compdef kubectl generated" ]] || fail "with kubectl: $out"
 '
 
+pre_npm='
+fake npm true
+'
+checks_npm='
+[[ $aliases[npmg] == "npm i -g " && $aliases[npmE] == "PATH=\"\$(npm bin)\":\"\$PATH\"" ]] || fail "alias npmg/npmE: $aliases[npmE]"
+[[ $_comps[npm] == _npm_completion ]] || fail "completion npm: $_comps[npm]"
+[[ -n ${(M)${(f)"$(zle -l)"}:#npm_toggle_install_uninstall} ]] || fail "widget npm_toggle_install_uninstall"
+[[ $(bindkey -M emacs "^[OQ^[OQ") == *npm_toggle_install_uninstall ]] || fail "bindkey F2 F2"
+BUFFER="npm i left-pad" CURSOR=0
+npm_toggle_install_uninstall
+[[ $BUFFER == "npm uninstall left-pad" && $CURSOR == 8 ]] || fail "toggle: $BUFFER $CURSOR"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
