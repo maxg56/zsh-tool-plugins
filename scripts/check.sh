@@ -175,6 +175,20 @@ clipcopy() { cat > $WORK/clip2 }
 [[ $(<$WORK/clip2) == $WORK/dir ]] || fail "clipcopy got: $(<$WORK/clip2)"
 '
 
+checks_web_search='
+[[ $aliases[google] == "web_search google" && $aliases[wiki] == "web_search duckduckgo \\!w" ]] || fail "alias google/wiki: $aliases[wiki]"
+fake browser "echo \"\$@\" > $WORK/opened"
+export BROWSER=$WORK/bin/browser
+eval "google zsh tool"
+[[ $(<$WORK/opened) == "https://www.google.com/search?q=zsh+tool" ]] || fail "google: $(<$WORK/opened)"
+LC_ALL=C.UTF-8 web_search duckduckgo "café 50%"
+[[ $(<$WORK/opened) == "https://www.duckduckgo.com/?q=caf%C3%A9+50%25" ]] || fail "ddg: $(<$WORK/opened)"
+eval github
+[[ $(<$WORK/opened) == "https://github.com" ]] || fail "github: $(<$WORK/opened)"
+out=$(rerun "ZSH_WEB_SEARCH_ENGINES=(mysearch \"https://search.example/?q=\")" "print -r -- \$aliases[mysearch]") || fail "engines: $out"
+[[ $out == "web_search mysearch" ]] || fail "custom engine alias: $out"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
