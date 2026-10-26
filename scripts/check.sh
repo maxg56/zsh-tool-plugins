@@ -126,6 +126,15 @@ out=$(rerun "zstyle :omz:plugins:docker legacy-completion yes") && [[ -z $out ]]
 wait_for $ZSH_CACHE_DIR/completions/_docker "Felix Riedel"
 '
 
+checks_docker_compose='
+[[ $aliases[dco] == "docker compose" && $aliases[dcupd] == "docker compose up -d" ]] || fail "alias dco without docker-compose: $aliases[dco]"
+[[ $_comps[docker-compose] == _docker-compose ]] || fail "completion docker-compose: $_comps[docker-compose]"
+fake docker-compose true
+out=$(rerun "" "print -r -- \$aliases[dclF]") || fail "with docker-compose: $out"
+[[ $out == "docker-compose logs -f --tail 0" ]] || fail "alias dclF with docker-compose: $out"
+(( ! $+dccmd )) || fail "dccmd left behind"
+'
+
 status=0
 for dir in "$repo"/plugins/*/; do
   name=$(basename "$dir")
